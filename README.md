@@ -58,6 +58,8 @@ Interestingly, the 'HR', 'RBI', and 'SLG' are not correlated at all with the cos
 
 ##### Drafting players
 
+`baseball_script.py` contains the code for the drafting algorithm.
+
 In summary, we use several weights in ranking player data, in order of importance:
 1. Correlation between features and number of wins in team dataset
 2. Delta between our team's current features and the number 1 ranked team's features
