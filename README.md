@@ -1,5 +1,7 @@
 # Baseball Case 
+See `baseball_writeup_withcode.ipynb` for the code along with this writeup. 
 
+`baseball_script.py` contains the code for the drafting algorithm.
 
 ## Data Exploration
 
@@ -9,7 +11,6 @@ We are given two datasets. The first dataset contains information about the 50 a
 
 Given the target of "win more games next season", it is evident that the number of wins of each team is our target variable. 
 We must determine which features are most important in predicting the number of wins of a team, and then use those features to identify which players to draft to most improve the performance of our team (team 26, Seattle). 
-
 
 First, we will look at the distribution of the target variable, W (number of wins). 
 
@@ -25,17 +26,16 @@ Plotting the remainder of the columns, it is evident that some columns are much 
 
 In ranking our players, we will want to determine a correllation threshold between the features and the target variable. We will use a threshold of 0.25, which is subject to change. 
 
-'R_hitting', 'HR', 'RBI', 'BA', 'OBP', 'SLG', 'R_pitching', 'BB']
 
-A threshold of 0.25 results in 8 features being selected: 
+A threshold of 0.2 results in 8 features being selected, in order of significance: 
 - R_hitting: Runs scored 
-- HR: Home runs  
 - RBI: Runs batted in 
-- BA: Batting average
-- OBP: On base percentage
 - SLG: Slugging percentage
-- R_pitching: Runs allowed
-- BB: Walks 
+- OBP: On base percentage
+- HR: Home runs  
+- BA: Batting average
+- H: Hits
+
 
 After selecting these 8 features, we will look at the correlation between each of these features. 
 
@@ -54,6 +54,7 @@ The selected features are somewhat correlated. This is not a problem, since we a
 Next, we will look at the correlation between the selected features and the cost of the player.
 
 Interestingly, the 'HR', 'RBI', and 'SLG' are not correlated at all with the cost of the player, even though the correlation between these features and the target variable is high. This suggests that we shouldn't weight the cost of the player too heavily when drafting players, rather we should primarily focus on improving the target metrics of our team while simply focusing on keeping the cost below budget. 
+
 
 ##### Drafting players
 
