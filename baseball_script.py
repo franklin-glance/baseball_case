@@ -32,7 +32,9 @@ pitching_df.set_index('TEAM', inplace=True)
 pitching_df.drop('W', axis=1, inplace=True)
 pitching_df.drop('L', axis=1, inplace=True)
 pitching_df.drop('GP', axis=1, inplace=True)
-pitching_df.rename(columns={'R':'R_pitching'}, inplace=True)
+pitching_df.drop('BB', axis=1, inplace=True)
+pitching_df.drop('R', axis=1, inplace=True)
+
 
 
 hitting_df.set_index('TEAM', inplace=True)
@@ -120,6 +122,7 @@ def get_top_players(team, available_players, significant_cols, current_team, pla
     ##########################################################################
     # Draft Step 4, Part 2: calculating player scores
     for player_number, player_row in player_df.iterrows():
+        player_number += 1
         if player_number not in available_players:
             continue
         # calculate the weighted average of the significant columns
