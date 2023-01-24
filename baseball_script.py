@@ -1,8 +1,6 @@
 '''
 Script to use when drafting players. Updates stats as players are drafted to determine optimal picks based on other team's draft choices. 
 '''
-
-
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler()
 
@@ -83,13 +81,12 @@ col_descriptions = {
     'CS' : 'Caught Stealing'}
 
 
-def getSigCols(corr_tolerance):
+def getSigCols(corr_tolerance, df):
     # eliminating variables with low correlation 
     significant_cols = []
-    for i in team_df.columns:
-        correlation = team_df['W'].corr(team_df[i])
+    for i in df.columns:
+        correlation = df['W'].corr(df[i])
         if abs(correlation) < corr_tolerance or i == 'W' or i == 'L' or i == 'GP' or i not in keep_cols:
-            # print('Skipping: ', col_descriptions[i] + f' ({i})')
             continue
         significant_cols.append((i,correlation))
     return significant_cols
@@ -97,12 +94,9 @@ def getSigCols(corr_tolerance):
 def get_top_players(team, available_players, significant_cols, current_team, player_df, team_df, n=10, budget=30000000, picks_remaining=4):
     # player_df is a scaled [0,1] dataframe of player stats, aside from 'Player Cost' and 'Player ID'
     # get the team's current stats
-    league_avg = team_df.loc['Texas'] # use number 1 ranked team (since we are 26)
-    # print('League Average: ', league_avg)
-    # print('Current Team: ', current_team)
-
-    cols = [i[0] for i in significant_cols]
+    league_avg = team_df.loc['LA Angels'] # use team with most wins 
     player_scores = {}
+
     # update column weights based on team's current stats
     significant_cols_delta = {}
     ##########################################################################
@@ -117,7 +111,6 @@ def get_top_players(team, available_players, significant_cols, current_team, pla
         diff = diff / league_avg[column]
         significant_cols_delta[column] = diff
     # print('Significant Columns delta from league average: ', significant_cols_delta)
-    score_data = {}
     
     ##########################################################################
     # Draft Step 4, Part 2: calculating player scores
@@ -216,10 +209,13 @@ def draft(team='Seattle', corr_level=0.25, n=10, budget=30000000):
             # get the top n players
             top_players = get_top_players(team, available_players, sigcols, current_team=current_team, n=n, budget=budget, player_df=normalized_cur_df, team_df=team_df, picks_remaining=picks_remaining) 
             # print(top_players)
+            print('\n')
+            print('Current Budget: {:,.0f}'.format(budget))
+            print('\n')
 
             print(f'Top {n} Players: ')
             for i, player in enumerate(top_players):
-                print(f'Rank {i}: {player}')
+                print(f'Rank {i+1} --> Player: {player[0]}, Score: {np.round(player[1],2)}', 'Cost: {:,.0f}'.format(normalized_cur_df.loc[player[0], 'Player Cost']))
 
             print('Enter the Player # (not rank) to draft or enter nothing to quit')
             player_num = int(input())
@@ -279,4 +275,4 @@ def draft(team='Seattle', corr_level=0.25, n=10, budget=30000000):
             print('Invalid choice, try again.')
             continue
 
-draft('Seattle', 0.25)
+draft('Seattle', 0.2)
