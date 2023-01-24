@@ -178,7 +178,7 @@ def draft(team='Seattle', corr_level=0.25, n=10, budget=30000000):
     current_team = team_df.loc[team]
     # print(current_team)
     # get significant columns
-    significant_cols = getSigCols(corr_level)
+    significant_cols = getSigCols(corr_level, team_df)
     print(f'Significant Columns: ', significant_cols)
 
 
